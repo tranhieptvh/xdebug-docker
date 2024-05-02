@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    #      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./.docker/nginx/client_max_body_size.conf:/etc/nginx/conf.d/client_max_body_size.conf:ro
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/app.conf
+      - ./server:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  # PHP Service
+  app:
+    build:
+      context: ./.docker
+      dockerfile: Dockerfile
+    container_name: app
+    volumes:
+      - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./server:/var/www/html
+    environment:
+      - VIRTUAL_HOST=xdebug-docker.local
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # MySQL Service
+  db:
+    image: mysql:5.7
+    container_name: db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 8888
+    volumes:
+      - ./db:/var/lib/mysql/
+    networks:
+      - app-network
+
+# Docker Networks
+networks:
+  app-network:
+    driver: bridge
