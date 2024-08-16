@@ -26,9 +26,14 @@ make build
 make up
 ```
 
-### Step 4: Config PHPStorm
+### Step 4: Allow port for xdebug
+```bash
+sudo ufw allow 9000
+```
 
-#### 4.1. Add Server
+### Step 5: Config PHPStorm
+
+#### 5.1. Add Server
 
 - File -> Settings -> PHP -> Servers -> Add
    - Server name: `xdebug-docker` (or any other name)
@@ -36,7 +41,7 @@ make up
    - Check "Use path mapping"
    - Enter `Absolute path on the server`: /var/www/html (folder mounted - /server)
 
-#### 4.2. Config debugger
+#### 5.2. Config debugger
 
 - Run -> Edit Configurations -> Add -> PHP Remote Debug
 - Check "Filter debug connection by IDE key"

@@ -41,9 +41,9 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: 8888
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./db:/var/lib/mysql/
+      - ./.docker/db:/var/lib/mysql/
     networks:
       - app-network
 
